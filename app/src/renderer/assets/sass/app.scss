@@ -1,0 +1,36 @@
+$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
+@import "~bootstrap-sass/assets/stylesheets/_bootstrap";
+
+html, body {
+    height: 100%;
+}
+body {
+    margin: 0;
+}
+
+.flex-container {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.header {
+  margin-bottom: 50px;
+}
+
+.viewfinder {
+  text-align: center;
+  margin: 0 auto;
+}
+
+.controls {
+  margin-top: 50px;
+}
+
+.messages {
+  margin-top: 20px;
+}
