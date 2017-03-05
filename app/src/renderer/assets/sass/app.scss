@@ -1,5 +1,7 @@
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 @import "~bootstrap-sass/assets/stylesheets/_bootstrap";
+@import "variables";
+@import "controls";
 
 @font-face {
   font-family: 'Yanone Kaffeesatz';
@@ -13,12 +15,40 @@ html, body {
 
 body {
   margin: 0;
-  background: linear-gradient(135deg, #6B19A6 0%,#d310bc 100%);
+  background: linear-gradient(135deg, $primary 0%,$secondary 100%);
 }
 
 h1 {
-  color: #fff;
+  color: $white;
   font-size: 60px;
+}
+
+h2 {
+  text-align: center;
+  font-size: 7em;
+  margin: 20px 0 20px 0;
+  text-decoration: none;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  transition: all 0.5s;
+  color: $white;
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  animation: neonHeader 1.5s ease-in-out infinite alternate;
+}
+
+h2:hover {
+  color: $white;
+  animation: none;
+}
+
+
+@keyframes neonHeader {
+  from {
+    text-shadow: 0 0 10px $white, 0 0 20px $white, 0 0 30px $white, 0 0 40px #FF1177, 0 0 70px #FF1177, 0 0 80px #FF1177, 0 0 100px #FF1177, 0 0 150px #FF1177;
+  }
+  to {
+    text-shadow: 0 0 5px $white, 0 0 10px $white, 0 0 15px $white, 0 0 20px #FF1177, 0 0 35px #FF1177, 0 0 40px #FF1177, 0 0 50px #FF1177, 0 0 75px #FF1177;
+  }
 }
 
 .flex-container {
@@ -39,12 +69,8 @@ h1 {
 .camera {
   text-align: center;
   margin: 0 auto;
-  box-shadow: 20px 20px 150px 0px rgba(237,194,237,1);
+  box-shadow: 20px 20px 150px 0px $secondaryLight;
   padding: 15px;
-}
-
-.controls {
-  margin-top: 50px;
 }
 
 .messages {

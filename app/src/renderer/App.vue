@@ -1,11 +1,11 @@
 <template>
   <div id="#app" class="flex-container">
 
-    <div class="header flex-item">
+    <div class="header">
       <h1>PhotoBooth</h1>
     </div>
 
-    <div class="camera flex-item" v-show="enabled">
+    <div class="camera" v-show="enabled">
       <div class="viewfinder" v-show="!img.preview"></div>
 
       <div class="preview" v-show="img.preview">
@@ -23,32 +23,23 @@
       </div>
     </div>
 
-    <div class="controls flex-item">
-      <ul class="list-inline">
-        <li>
-          <span id="power" class="btn" v-bind:class="powerStatus()" v-on:click="toggleCamera()">
-            <span class="glyphicon glyphicon-off"></span>
-          </span>
-        </li>
 
-        <li>
-          <span id="capture" class="btn btn-default" v-bind:class="canSnap()" v-on:click="takePhoto()">
-            <span class="glyphicon glyphicon-camera"></span>
-          </span>
-        </li>
+    <div class="flex-controls">
+      <span id="power" class="control" v-bind:class="powerStatus()" v-on:click="toggleCamera()">
+        <span class="glyphicon glyphicon-off"></span>
+      </span>
 
-        <li>
-          <span id="save" class="btn btn-default" v-bind:class="canSave()" v-on:click="saveImg()">
-            <span class="glyphicon glyphicon-floppy-disk"></span>
-          </span>
-        </li>
+      <span id="capture" class="control" v-on:click="takePhoto()">
+        <span class="glyphicon glyphicon-camera"></span>
+      </span>
 
-        <li>
-          <span id="trash" class="btn btn-default" v-bind:class="canSave()" v-on:click="reset()">
-            <span class="glyphicon glyphicon-trash"></span>
-          </span>
-        </li>
-      </ul>
+      <span id="save" class="control" v-on:click="saveImg()">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+      </span>
+
+      <span id="trash" class="control" v-on:click="reset()">
+        <span class="glyphicon glyphicon-trash"></span>
+      </span>
     </div>
 
   </div>
@@ -79,6 +70,14 @@
           height: 540,
           image_format: 'jpeg',
           jpeg_quality: 90
+        },
+        audio: {
+          booted: '',
+          powerUp: '',
+          powerDown: '',
+          snapped: 'click.aif',
+          saved: '',
+          trashed: ''
         }
       }
     },
@@ -90,20 +89,15 @@
     methods: {
 
       initialiseCamera () {
-        WebCam.set('constraints', this.cameraOptions)
+        WebCam.set(this.cameraOptions)
       },
 
       toggleCamera () {
-        if (!this.enabled) {
-          WebCam.set(this.cameraOptions)
-
-          return this.enableCamera()
-        }
-
-        return this.disableCamera()
+        return this.enabled ? this.disableCamera() : this.enableCamera()
       },
 
       enableCamera () {
+        this.initialiseCamera()
         this.enabled = true
         WebCam.attach('.viewfinder')
       },
@@ -119,25 +113,15 @@
 
       powerStatus () {
         if (this.enabled) {
-          return 'btn-danger'
-        }
-
-        return 'btn-default'
-      },
-
-      canSnap () {
-        if (!this.enabled) {
-          return 'disabled'
-        }
-      },
-
-      canSave () {
-        if (!this.img.preview) {
-          return 'disabled'
+          return 'active'
         }
       },
 
       takePhoto () {
+        if (!this.enabled) {
+          return
+        }
+
         var self = this
 
         WebCam.snap(function (dataUri) {
@@ -145,10 +129,15 @@
             data: dataUri,
             preview: true
           }
+          self.play(self.audio.snapped)
         })
       },
 
       saveImg () {
+        if (!this.enabled) {
+          return
+        }
+
         var self = this
 
         dialog.showSaveDialog(this.filters, function (fileName) {
@@ -192,6 +181,10 @@
           error: '',
           success: ''
         }
+      },
+
+      play (file) {
+        new Audio('./assets/audio/' + file).play()
       }
     }
   }
