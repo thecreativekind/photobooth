@@ -73,8 +73,12 @@
 
     methods: {
       persistData () {
-        store.setItem('directory', document.getElementsByName('directory')[0].value)
-        store.setItem('endpoint', document.getElementsByName('endpoint')[0].value)
+        var directory = document.getElementsByName('directory')[0].value
+        var endpoint = document.getElementsByName('endpoint')[0].value
+
+        directory ? store.setItem('directory', directory) : store.removeItem('directory')
+        endpoint ? store.setItem('endpoint', endpoint) : store.removeItem('endpoint')
+
         this.saved = true
       }
     }

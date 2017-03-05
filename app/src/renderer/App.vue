@@ -160,8 +160,10 @@
       writeFile (fileName) {
         var self = this
 
-        fs.writeFile(fileName + '.jpg', self.processBase64Image(), function (response) {
-          console.log(response)
+        fs.writeFile(fileName + '.jpg', self.processBase64Image(), function (error) {
+          if (error) {
+            console.log(error)
+          }
         })
       },
 
@@ -176,7 +178,7 @@
       },
 
       upload () {
-        var self = this
+        // var self = this
         var url = store.getItem('endpoint')
 
         if (!url) {
@@ -191,9 +193,11 @@
           // Upload complete!
         })
 
-        WebCam.upload(self.img.data, url, function (code, text) {
-          self.showSaveModal = true
-        })
+        // WebCam.upload(self.img.data, url, function (code, text) {
+        //   self.showSaveModal = true
+        // })
+
+        console.log('uploading')
       },
 
       reset (isDeleting = null) {
