@@ -2,11 +2,11 @@
   <div id="#app" class="flex-container">
 
     <div class="header flex-item">
-      <h1>Photo Booth</h1>
+      <h1>PhotoBooth</h1>
     </div>
 
     <div class="camera flex-item">
-      <div class="viewfinder" v-show="!img.preview"></div>
+      <div class="viewfinder" style="width: 720;height: 540;" v-show="!img.preview"></div>
 
       <div class="preview" v-show="img.preview">
         <img v-bind:src="img.data" alt="">
@@ -21,6 +21,12 @@
       <div v-show="msg.success">
         <div class="alert alert-success">{{ msg.success }}</div>
       </div>
+    </div>
+
+    <div class="start">
+      <span v-on:click="toggleCamera()">
+        <span class="glyphicon glyphicon-off"></span>
+      </span>
     </div>
 
     <div class="controls flex-item">
@@ -75,8 +81,8 @@
           preview: false
         },
         cameraOptions: {
-          width: 800,
-          height: 600,
+          width: 720,
+          height: 540,
           image_format: 'jpeg',
           jpeg_quality: 90
         }
@@ -84,17 +90,19 @@
     },
 
     mounted () {
-      this.initialiseCamera()
+      // this.initialiseCamera()
     },
 
     methods: {
 
       initialiseCamera () {
-        WebCam.set(this.cameraOptions)
+        WebCam.set('constraints', this.cameraOptions)
       },
 
       toggleCamera () {
         if (!this.enabled) {
+          WebCam.set(this.cameraOptions)
+
           return this.enableCamera()
         }
 
@@ -135,6 +143,7 @@
         var self = this
 
         WebCam.snap(function (dataUri) {
+          console.log(dataUri.match(/^data:([A-Za-z-+/]+);base64,(.+)$/))
           self.img = {
             data: dataUri,
             preview: true

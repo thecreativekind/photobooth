@@ -1,15 +1,40 @@
 $icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
 @import "~bootstrap-sass/assets/stylesheets/_bootstrap";
+@import url('https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz');
 
 html, body {
     height: 100%;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
 }
+
 body {
-    margin: 0;
+  margin: 0;
+  background: linear-gradient(135deg, #6c21a5 0%,#d310bc 100%);
+}
+
+h1 {
+  color: #fff;
+  font-size: 60px;
+}
+
+.start span .glyphicon {
+  font-size: 60px;
+  color: #fff;
+    border-radius: 50%;
+    box-shadow:
+        inset 0 0 50px #fff,      /* inner white */
+        inset 20px 0 80px #f0f,   /* inner left magenta short */
+        inset -20px 0 80px #be13b7,  /* inner right cyan short */
+        inset 20px 0 300px #f0f,  /* inner left magenta broad */
+        inset -20px 0 300px #be13b7, /* inner right cyan broad */
+        0 0 50px #fff,            /* outer white */
+        -10px 0 80px #f0f,        /* outer left magenta */
+        10px 0 80px #be13b7;         /* outer right cyan */
 }
 
 .flex-container {
   height: 100%;
+  width: 100%;
   padding: 0;
   margin: 0;
   display: flex;
