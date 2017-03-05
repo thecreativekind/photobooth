@@ -81,6 +81,7 @@
     "webpack-merge": "^2.4.0"
   },
   "dependencies": {
+    "axios": "^0.15.3",
     "webcamjs": "^1.0.22"
   }
 }

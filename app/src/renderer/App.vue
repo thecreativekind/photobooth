@@ -52,6 +52,7 @@
   var WebCam = require('webcamjs')
   var {dialog} = require('electron').remote
   var fs = require('fs')
+  var store = localStorage
 
   export default {
 
@@ -149,12 +150,18 @@
             return
           }
 
-          fs.writeFile(fileName + '.jpg', self.processBase64Image(), function (err) {
-            if (!err) {
-              self.play(self.audio.saved)
-              self.showSaveModal = true
-            }
-          })
+          self.writeFile(fileName)
+          self.upload()
+          self.play(self.audio.saved)
+          self.showSaveModal = true
+        })
+      },
+
+      writeFile (fileName) {
+        var self = this
+
+        fs.writeFile(fileName + '.jpg', self.processBase64Image(), function (response) {
+          console.log(response)
         })
       },
 
@@ -166,6 +173,27 @@
         }
 
         return new Buffer(matches[2], 'base64')
+      },
+
+      upload () {
+        var self = this
+        var url = store.getItem('endpoint')
+
+        if (!url) {
+          return
+        }
+
+        WebCam.on('uploadProgress', function (progress) {
+          // Upload in progress (will be between 0.0 and 1.0)
+        })
+
+        WebCam.on('uploadComplete', function (code, text) {
+          // Upload complete!
+        })
+
+        WebCam.upload(self.img.data, url, function (code, text) {
+          self.showSaveModal = true
+        })
       },
 
       reset (isDeleting = null) {
