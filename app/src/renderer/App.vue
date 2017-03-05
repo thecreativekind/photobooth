@@ -5,8 +5,8 @@
       <h1>PhotoBooth</h1>
     </div>
 
-    <div class="camera flex-item">
-      <div class="viewfinder" style="width: 720;height: 540;" v-show="!img.preview"></div>
+    <div class="camera flex-item" v-show="enabled">
+      <div class="viewfinder" v-show="!img.preview"></div>
 
       <div class="preview" v-show="img.preview">
         <img v-bind:src="img.data" alt="">
@@ -23,34 +23,28 @@
       </div>
     </div>
 
-    <div class="start">
-      <span v-on:click="toggleCamera()">
-        <span class="glyphicon glyphicon-off"></span>
-      </span>
-    </div>
-
     <div class="controls flex-item">
       <ul class="list-inline">
         <li>
-          <span class="btn" v-bind:class="powerStatus()" v-on:click="toggleCamera()">
+          <span id="power" class="btn" v-bind:class="powerStatus()" v-on:click="toggleCamera()">
             <span class="glyphicon glyphicon-off"></span>
           </span>
         </li>
 
         <li>
-          <span class="btn btn-default" v-bind:class="canSnap()" v-on:click="takePhoto()">
+          <span id="capture" class="btn btn-default" v-bind:class="canSnap()" v-on:click="takePhoto()">
             <span class="glyphicon glyphicon-camera"></span>
           </span>
         </li>
 
         <li>
-          <span class="btn btn-default" v-bind:class="canSave()" v-on:click="saveImg()">
+          <span id="save" class="btn btn-default" v-bind:class="canSave()" v-on:click="saveImg()">
             <span class="glyphicon glyphicon-floppy-disk"></span>
           </span>
         </li>
 
         <li>
-          <span class="btn btn-default" v-bind:class="canSave()" v-on:click="reset()">
+          <span id="trash" class="btn btn-default" v-bind:class="canSave()" v-on:click="reset()">
             <span class="glyphicon glyphicon-trash"></span>
           </span>
         </li>
@@ -116,6 +110,10 @@
 
       disableCamera () {
         this.enabled = false
+        this.img = {
+          preview: false,
+          data: ''
+        }
         WebCam.reset()
       },
 
@@ -143,7 +141,6 @@
         var self = this
 
         WebCam.snap(function (dataUri) {
-          console.log(dataUri.match(/^data:([A-Za-z-+/]+);base64,(.+)$/))
           self.img = {
             data: dataUri,
             preview: true
@@ -160,7 +157,7 @@
             return
           }
 
-          fs.writeFile(fileName, self.processBase64Image(), function (err) {
+          fs.writeFile(fileName + '.jpg', self.processBase64Image(), function (err) {
             if (err) {
               self.msg.error = 'Cannot save the file'
             } else {
@@ -191,10 +188,10 @@
           data: ''
         }
 
-        // this.msg = {
-        //   error: '',
-        //   success: ''
-        // }
+        this.msg = {
+          error: '',
+          success: ''
+        }
       }
     }
   }
