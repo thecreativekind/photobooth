@@ -3,6 +3,11 @@
 
     <div class="header">
       <h1>PhotoBooth</h1>
+
+      <div class="modals">
+        <settings v-if="showSettingsModal" @close="showSettingsModal = false"></settings>
+        <save v-if="showSaveModal" @close="showSaveModal = false"></save>
+      </div>
     </div>
 
     <div class="camera" v-show="enabled">
@@ -13,51 +18,52 @@
       </div>
     </div>
 
-    <div class="messages">
-      <div v-show="msg.error">
-        <div class="alert alert-danger">{{ msg.error }}</div>
-      </div>
-
-      <div v-show="msg.success">
-        <div class="alert alert-success">{{ msg.success }}</div>
-      </div>
-    </div>
-
-
     <div class="flex-controls">
       <span id="power" class="control" v-bind:class="powerStatus()" v-on:click="toggleCamera()">
         <span class="glyphicon glyphicon-off"></span>
       </span>
 
       <span id="capture" class="control" v-on:click="takePhoto()">
-        <span class="glyphicon glyphicon-camera"></span>
+        <span class="glyphicon glyphicon-camera">
+          <audio id="capture-audio" src="./assets/audio/click.mp3"></audio>
+        </span>
       </span>
 
       <span id="save" class="control" v-on:click="saveImg()">
         <span class="glyphicon glyphicon-floppy-disk"></span>
       </span>
 
-      <span id="trash" class="control" v-on:click="reset()">
+      <span id="trash" class="control" v-on:click="reset(true)">
         <span class="glyphicon glyphicon-trash"></span>
       </span>
+
+      <span id="settings" class="control" @click="showSettingsModal = true">
+        <span class="glyphicon glyphicon-cog"></span>
+      </span>
+
     </div>
 
   </div>
 </template>
 
 <script>
+  import Settings from './components/Settings'
+  import Save from './components/Save'
   var WebCam = require('webcamjs')
   var {dialog} = require('electron').remote
   var fs = require('fs')
 
   export default {
+
+    components: {
+      Save, Settings
+    },
+
     data () {
       return {
         enabled: false,
-        msg: {
-          error: '',
-          success: ''
-        },
+        showSettingsModal: false,
+        showSaveModal: false,
         filters: [
           { name: 'Images', extensions: ['jpeg'] }
         ],
@@ -72,18 +78,14 @@
           jpeg_quality: 90
         },
         audio: {
-          booted: '',
-          powerUp: '',
-          powerDown: '',
-          snapped: 'click.aif',
-          saved: '',
-          trashed: ''
+          booted: 'power-up.mp3',
+          power: 'power-up.mp3',
+          snapped: 'click.mp3',
+          upoaded: 'complete.mp3',
+          saved: 'saved.mp3',
+          trashed: 'delete.mp3'
         }
       }
-    },
-
-    mounted () {
-      // this.initialiseCamera()
     },
 
     methods: {
@@ -93,6 +95,7 @@
       },
 
       toggleCamera () {
+        this.play(this.audio.power)
         return this.enabled ? this.disableCamera() : this.enableCamera()
       },
 
@@ -129,12 +132,13 @@
             data: dataUri,
             preview: true
           }
+
           self.play(self.audio.snapped)
         })
       },
 
       saveImg () {
-        if (!this.enabled) {
+        if (this.img.data === '') {
           return
         }
 
@@ -142,44 +146,36 @@
 
         dialog.showSaveDialog(this.filters, function (fileName) {
           if (fileName === undefined) {
-            this.msg.error = 'File not saved. No file name given.'
             return
           }
 
           fs.writeFile(fileName + '.jpg', self.processBase64Image(), function (err) {
-            if (err) {
-              self.msg.error = 'Cannot save the file'
-            } else {
-              self.msg.success = 'Image saved succesfully'
+            if (!err) {
+              self.play(self.audio.saved)
+              self.showSaveModal = true
             }
           })
         })
       },
 
       processBase64Image () {
-        var response = {}
-
         var matches = this.img.data.match(/^data:([A-Za-z-+/]+);base64,(.+)$/)
 
         if (matches.length !== 3) {
           return new Error('Invalid input string')
         }
 
-        response.type = matches[1]
-        response.data = new Buffer(matches[2], 'base64')
-
-        return response.data
+        return new Buffer(matches[2], 'base64')
       },
 
-      reset () {
+      reset (isDeleting = null) {
+        if (isDeleting) {
+          this.play(this.audio.trashed)
+        }
+
         this.img = {
           preview: false,
           data: ''
-        }
-
-        this.msg = {
-          error: '',
-          success: ''
         }
       },
 

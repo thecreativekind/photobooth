@@ -1,13 +1,14 @@
 .flex-controls {
-  width: 50%;
-  padding: 0;
+  background-color: $primaryDark;
+  width: 100%;
+  padding: 30px 100px;
   margin: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 50px;
   color: $white;
   font-size: 40px;
+  border-top: 1px solid #d66cd3;
 }
 
 .flex-controls .control {
@@ -18,8 +19,7 @@
 }
 
 #power:hover, #power.active {
-  color: #dd1142;
-  text-shadow: 0 0 20px #eb96ad;
+  color: $green;
 }
 
 #power.active:hover {
@@ -27,34 +27,13 @@
 }
 
 #capture:hover {
-  color: #24dc11;
-  text-shadow: 0 0 20px #bbeb96;
+  color: $blue;
 }
 
 #save:hover {
-  color: #0dabee;
-  text-shadow: 0 0 20px #70c5e9;
+  color: $orange;
 }
 
 #trash:hover {
-  color: #dd1142;
-  text-shadow: 0 0 20px #eb96ad;
-}
-
-@keyframes neon-control {
-  from {
-    text-shadow: 0 0 10px $secondaryLight, 0 0 20px $secondaryLight, 0 0 30px $secondaryLight, 0 0 40px $secondary, 0 0 70px $secondary, 0 0 80px $secondary, 0 0 100px $secondary, 0 0 150px $secondary;
-  }
-  to {
-    text-shadow: 0 0 5px $secondaryLight, 0 0 10px $secondaryLight, 0 0 15px $secondaryLight, 0 0 20px $secondary, 0 0 35px $secondary, 0 0 40px $secondary, 0 0 50px $secondary, 0 0 75px $secondary;
-  }
-}
-
-@keyframes neon-control-green {
-  from {
-    text-shadow: 0 0 10px #bbeb96, 0 0 20px #bbeb96, 0 0 30px #bbeb96, 0 0 40px #9afc4c, 0 0 70px #9afc4c, 0 0 80px #9afc4c, 0 0 100px #9afc4c, 0 0 150px #9afc4c;
-  }
-  to {
-    text-shadow: 0 0 5px #bbeb96, 0 0 10px #bbeb96, 0 0 15px #bbeb96, 0 0 20px #9afc4c, 0 0 35px #9afc4c, 0 0 40px #9afc4c, 0 0 50px #9afc4c, 0 0 75px #9afc4c;
-  }
+  color: $red;
 }

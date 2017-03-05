@@ -1,0 +1,33 @@
+html, body {
+    height: 100%;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(135deg, $primary 0%,$secondary 100%);
+}
+
+.flex-container {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.camera {
+  text-align: center;
+  box-shadow: 20px 20px 150px 0px $secondaryLight;
+  padding: 15px;
+}
+
+.spacer-bottom-3x {
+  margin-bottom: 30px;
+}
+
+.spacer-bottom-5x {
+  margin-bottom: 50px;
+}

@@ -57,6 +57,16 @@ let rendererConfig = {
         }
       },
       {
+        test: /\.(mp3)(\?.*)?$/,
+        use: {
+          loader: 'file-loader',
+          query: {
+            limit: 10000,
+            name: 'imgs/[name].[ext]'
+          }
+        }
+      },
+      {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         use: {
           loader: 'url-loader',
@@ -85,7 +95,7 @@ let rendererConfig = {
       template: './app/index.ejs',
       appModules: process.env.NODE_ENV !== 'production'
         ? path.resolve(__dirname, 'app/node_modules')
-        : false,
+        : false
     }),
     new webpack.NoEmitOnErrorsPlugin()
   ],

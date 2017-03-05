@@ -1,0 +1,29 @@
+@font-face {
+  font-family: 'Yanone Kaffeesatz';
+  src: url('../fonts/YanoneKaffeesatz-Regular.ttf')  format('truetype');
+}
+
+html, body {
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+}
+
+h1 {
+  text-align: center;
+  font-size: 5em;
+  text-decoration: none;
+  -webkit-transition: all 0.5s;
+  -moz-transition: all 0.5s;
+  transition: all 0.5s;
+  color: $white;
+  font-family: 'Yanone Kaffeesatz', sans-serif;
+  animation: neon-header 1.5s ease-in-out infinite alternate;
+}
+
+h1:hover {
+  color: $white;
+  animation: none;
+}
+
+label {
+  font-weight: normal;
+}
