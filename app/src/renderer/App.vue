@@ -49,9 +49,13 @@
 <script>
   import Settings from './components/Settings'
   import Save from './components/Save'
-  var WebCam = require('webcamjs')
-  var {dialog} = require('electron').remote
-  var fs = require('fs')
+
+  const fs = require('fs')
+  const WebCam = require('webcamjs')
+  const electron = require('electron')
+  const {dialog} = require('electron').remote
+
+  var screenElectron = electron.screen
   var store = localStorage
 
   export default {
@@ -92,7 +96,14 @@
     methods: {
 
       initialiseCamera () {
-        WebCam.set(this.cameraOptions)
+        var mainScreen = screenElectron.getPrimaryDisplay()
+
+        WebCam.set({
+          width: mainScreen.size.width / 2,
+          height: mainScreen.size.height / 2,
+          image_format: 'jpeg',
+          jpeg_quality: 90
+        })
       },
 
       toggleCamera () {
@@ -122,11 +133,11 @@
       },
 
       takePhoto () {
+        var self = this
+
         if (!this.enabled) {
           return
         }
-
-        var self = this
 
         WebCam.snap(function (dataUri) {
           self.img = {
@@ -139,11 +150,11 @@
       },
 
       saveImg () {
+        var self = this
+
         if (this.img.data === '') {
           return
         }
-
-        var self = this
 
         dialog.showSaveDialog(this.filters, function (fileName) {
           if (fileName === undefined) {
