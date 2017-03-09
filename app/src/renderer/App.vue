@@ -45,6 +45,9 @@
   import Upload from './components/Upload'
   const WebCam = require('webcamjs')
   const Electron = require('electron')
+  const config = require('../config')
+
+  var mainScreen = Electron.screen.getPrimaryDisplay()
 
   export default {
 
@@ -54,7 +57,7 @@
       return {
         enabled: false,
         showUploadModal: false,
-        uploadUrl: 'http://staff.dev/upload',
+        uploadUrl: config.endpoint,
         filters: [
           { name: 'Images', extensions: ['jpeg'] }
         ],
@@ -63,8 +66,8 @@
           preview: false
         },
         cameraOptions: {
-          width: 720,
-          height: 540,
+          width: mainScreen.size.width / 2,
+          height: mainScreen.size.height / 2,
           image_format: 'jpeg',
           jpeg_quality: 90
         },
@@ -82,14 +85,7 @@
     methods: {
 
       initialiseCamera () {
-        var mainScreen = Electron.screen.getPrimaryDisplay()
-
-        WebCam.set({
-          width: mainScreen.size.width / 2,
-          height: mainScreen.size.height / 2,
-          image_format: 'jpeg',
-          jpeg_quality: 90
-        })
+        WebCam.set(this.cameraOptions)
       },
 
       toggleCamera () {

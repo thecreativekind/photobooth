@@ -3,6 +3,7 @@ app/dist/index.html
 app/dist/main.js
 app/dist/renderer.js
 app/dist/styles.css
+app/src/config.js
 builds/*
 coverage
 node_modules/
