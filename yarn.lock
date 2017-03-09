@@ -2198,6 +2198,10 @@ elliptic@^6.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
+email-validator@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/email-validator/-/email-validator-1.0.7.tgz#4621ca32fc741eb833ac98d5fb55670b7e056c95"
+
 emojis-list@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/emojis-list/-/emojis-list-2.1.0.tgz#4daa4d9db00f9819880c79fa457ae5b09a1fd389"
@@ -4994,6 +4998,12 @@ progress@^1.1.8:
   version "1.1.8"
   resolved "https://registry.yarnpkg.com/progress/-/progress-1.1.8.tgz#e260c78f6161cdd9b0e56cc3e0a85de17c7a57be"
 
+progressbar.js@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/progressbar.js/-/progressbar.js-1.0.1.tgz#f7fbfc195240fe0bb32f6f7bdb2e7ff400ea71f9"
+  dependencies:
+    shifty "^1.5.2"
+
 proto-list@~1.2.1:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/proto-list/-/proto-list-1.2.4.tgz#212d5bfe1318306a420f6402b8e26ff39647a849"
@@ -5606,6 +5616,10 @@ shelljs@^0.7.5:
     glob "^7.0.0"
     interpret "^1.0.0"
     rechoir "^0.6.2"
+
+shifty@^1.5.2:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/shifty/-/shifty-1.5.4.tgz#d4362fc914dd280ddf6e522be408b21203208346"
 
 sigmund@^1.0.1:
   version "1.0.1"

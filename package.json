@@ -82,6 +82,8 @@
   },
   "dependencies": {
     "axios": "^0.15.3",
+    "email-validator": "^1.0.7",
+    "progressbar.js": "^1.0.1",
     "webcamjs": "^1.0.22"
   }
 }

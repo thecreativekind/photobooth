@@ -5,8 +5,7 @@
       <h1>PhotoBooth</h1>
 
       <div class="modals">
-        <settings v-if="showSettingsModal" @close="showSettingsModal = false"></settings>
-        <save v-if="showSaveModal" @close="showSaveModal = false"></save>
+        <upload :url="uploadUrl" :img="img" v-if="showUploadModal" @close="close()"></upload>
       </div>
     </div>
 
@@ -37,38 +36,25 @@
         <span class="glyphicon glyphicon-trash"></span>
       </span>
 
-      <span id="settings" class="control" @click="showSettingsModal = true">
-        <span class="glyphicon glyphicon-cog"></span>
-      </span>
-
     </div>
 
   </div>
 </template>
 
 <script>
-  import Settings from './components/Settings'
-  import Save from './components/Save'
-
-  const fs = require('fs')
+  import Upload from './components/Upload'
   const WebCam = require('webcamjs')
-  const electron = require('electron')
-  const {dialog} = require('electron').remote
-
-  var screenElectron = electron.screen
-  var store = localStorage
+  const Electron = require('electron')
 
   export default {
 
-    components: {
-      Save, Settings
-    },
+    components: {Upload},
 
     data () {
       return {
         enabled: false,
-        showSettingsModal: false,
-        showSaveModal: false,
+        showUploadModal: false,
+        uploadUrl: 'http://staff.dev/upload',
         filters: [
           { name: 'Images', extensions: ['jpeg'] }
         ],
@@ -96,7 +82,7 @@
     methods: {
 
       initialiseCamera () {
-        var mainScreen = screenElectron.getPrimaryDisplay()
+        var mainScreen = Electron.screen.getPrimaryDisplay()
 
         WebCam.set({
           width: mainScreen.size.width / 2,
@@ -150,32 +136,11 @@
       },
 
       saveImg () {
-        var self = this
-
         if (this.img.data === '') {
           return
         }
 
-        dialog.showSaveDialog(this.filters, function (fileName) {
-          if (fileName === undefined) {
-            return
-          }
-
-          self.writeFile(fileName)
-          self.upload()
-          self.play(self.audio.saved)
-          self.showSaveModal = true
-        })
-      },
-
-      writeFile (fileName) {
-        var self = this
-
-        fs.writeFile(fileName + '.jpg', self.processBase64Image(), function (error) {
-          if (error) {
-            console.log(error)
-          }
-        })
+        this.showUploadModal = true
       },
 
       processBase64Image () {
@@ -186,29 +151,6 @@
         }
 
         return new Buffer(matches[2], 'base64')
-      },
-
-      upload () {
-        // var self = this
-        var url = store.getItem('endpoint')
-
-        if (!url) {
-          return
-        }
-
-        WebCam.on('uploadProgress', function (progress) {
-          // Upload in progress (will be between 0.0 and 1.0)
-        })
-
-        WebCam.on('uploadComplete', function (code, text) {
-          // Upload complete!
-        })
-
-        // WebCam.upload(self.img.data, url, function (code, text) {
-        //   self.showSaveModal = true
-        // })
-
-        console.log('uploading')
       },
 
       reset (isDeleting = null) {
@@ -224,6 +166,11 @@
 
       play (file) {
         new Audio('./assets/audio/' + file).play()
+      },
+
+      close () {
+        this.showUploadModal = false
+        this.reset(true)
       }
     }
   }
