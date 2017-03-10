@@ -28,6 +28,10 @@
         </span>
       </span>
 
+      <span class="control">
+        {{ countdown }}
+      </span>
+
       <span id="save" class="control" v-on:click="saveImg()">
         <span class="glyphicon glyphicon-floppy-disk"></span>
       </span>
@@ -48,6 +52,7 @@
   const config = require('../config')
 
   var mainScreen = Electron.screen.getPrimaryDisplay()
+  console.log(mainScreen.size.width, mainScreen.size.height)
 
   export default {
 
@@ -56,28 +61,37 @@
     data () {
       return {
         enabled: false,
+
         showUploadModal: false,
+
         uploadUrl: config.endpoint,
-        filters: [
-          { name: 'Images', extensions: ['jpeg'] }
-        ],
+
+        countdown: '',
+
+        filters: [{
+          name: 'Images',
+          extensions: ['jpeg']
+        }],
+
         img: {
           data: '',
           preview: false
         },
+
         cameraOptions: {
           width: mainScreen.size.width / 2,
           height: mainScreen.size.height / 2,
           image_format: 'jpeg',
-          jpeg_quality: 90
+          jpeg_quality: 100
         },
+
         audio: {
-          booted: 'power-up.mp3',
-          power: 'power-up.mp3',
-          snapped: 'click.mp3',
-          upoaded: 'complete.mp3',
-          saved: 'saved.mp3',
-          trashed: 'delete.mp3'
+          booted: './assets/audio/power-up.mp3',
+          power: './assets/audio/power-up.mp3',
+          snapped: './assets/audio/click.mp3',
+          upoaded: './assets/audio/complete.mp3',
+          saved: './assets/audio/saved.mp3',
+          trashed: './assets/audio/delete.mp3'
         }
       }
     },
@@ -90,6 +104,7 @@
 
       toggleCamera () {
         this.play(this.audio.power)
+
         return this.enabled ? this.disableCamera() : this.enableCamera()
       },
 
@@ -115,20 +130,31 @@
       },
 
       takePhoto () {
-        var self = this
-
         if (!this.enabled) {
           return
         }
 
-        WebCam.snap(function (dataUri) {
-          self.img = {
-            data: dataUri,
-            preview: true
-          }
+        var self = this
 
-          self.play(self.audio.snapped)
-        })
+        var countdown = 3
+
+        var x = setInterval(function () {
+          self.countdown = countdown
+          countdown--
+          if (countdown < 0) {
+            WebCam.snap(function (dataUri) {
+              self.img = {
+                data: dataUri,
+                preview: true
+              }
+
+              self.play(self.audio.snapped)
+            })
+
+            clearInterval(x)
+            self.countdown = ''
+          }
+        }, 1000)
       },
 
       saveImg () {
@@ -137,16 +163,6 @@
         }
 
         this.showUploadModal = true
-      },
-
-      processBase64Image () {
-        var matches = this.img.data.match(/^data:([A-Za-z-+/]+);base64,(.+)$/)
-
-        if (matches.length !== 3) {
-          return new Error('Invalid input string')
-        }
-
-        return new Buffer(matches[2], 'base64')
       },
 
       reset (isDeleting = null) {
@@ -161,7 +177,7 @@
       },
 
       play (file) {
-        new Audio('./assets/audio/' + file).play()
+        new Audio(file).play()
       },
 
       close () {

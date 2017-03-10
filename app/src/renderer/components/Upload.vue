@@ -81,7 +81,6 @@
         }
 
         this.uploading = true
-        this.title = 'Success'
 
         var bar = new ProgressBar.Line('#progress', {
           easing: 'easeInOut',
