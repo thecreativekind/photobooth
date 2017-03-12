@@ -6,8 +6,10 @@
 
       <div class="modals">
         <settings v-if="showSettingsModal" @close="showSettingsModal = false"></settings>
-        <save v-if="showSaveModal" @close="showSaveModal = false"></save>
-        <countdown v-if="showCountdown" @close="showCountdown = false" :countdown="countdown"></countdown>
+
+        <save v-if="showSaveModal" @close="close()"></save>
+
+        <countdown v-if="showCountdown" @close="snap()" :startFrom="countdown"></countdown>
       </div>
     </div>
 
@@ -25,7 +27,7 @@
         <span class="glyphicon glyphicon-off"></span>
       </span>
 
-      <span id="capture" class="control" v-on:click="takePhoto()">
+      <span id="capture" class="control" v-on:click="initialiseCountdown()">
         <span class="glyphicon glyphicon-camera">
           <audio id="capture-audio" src="./assets/audio/click.mp3"></audio>
         </span>
@@ -74,7 +76,7 @@
         showSettingsModal: false,
         showSaveModal: false,
         showCountdown: false,
-        countdown: '',
+        countdown: 3,
         filters: [
           { name: 'Images', extensions: ['jpeg'] }
         ],
@@ -138,32 +140,27 @@
         }
       },
 
-      takePhoto () {
+      initialiseCountdown () {
         if (!this.enabled) {
           return
         }
 
         var self = this
-        var countdown = 3
         self.showCountdown = true
+      },
 
-        var x = setInterval(function () {
-          self.countdown = countdown
-          countdown--
-          if (countdown < 0) {
-            self.showCountdown = false
+      snap () {
+        var self = this
 
-            WebCam.snap(function (dataUri) {
-              self.img = {
-                data: dataUri,
-                preview: true
-              }
-              self.play(self.audio.snapped)
-            })
-            clearInterval(x)
-            self.countdown = ''
+        self.showCountdown = false
+
+        WebCam.snap(function (dataUri) {
+          self.img = {
+            data: dataUri,
+            preview: true
           }
-        }, 1000)
+          self.play(self.audio.snapped)
+        })
       },
 
       saveImg () {
@@ -223,6 +220,11 @@
         })
 
         console.log('uploading')
+      },
+
+      close () {
+        this.showSaveModal = false
+        this.reset(true)
       },
 
       reset (isDeleting = null) {

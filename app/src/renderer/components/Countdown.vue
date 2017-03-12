@@ -4,7 +4,7 @@
       <div class="countdown-wrapper">
         <div class="countdown-container">
           <div class="countdown-body">
-              {{ countdown }}
+              {{ counter }}
           </div>
         </div>
       </div>
@@ -15,10 +15,32 @@
 <script>
   export default {
 
-    props: ['countdown'],
+    props: ['startFrom'],
+
+    data () {
+      return {
+        counter: ''
+      }
+    },
+
+    mounted () {
+      this.counter = this.startFrom
+      this.countdown()
+    },
 
     methods: {
-      //
+
+      countdown () {
+        var self = this
+
+        var x = setInterval(function () {
+          self.counter--
+          if (self.counter < 0) {
+            clearInterval(x)
+            self.$emit('close')
+          }
+        }, 1000)
+      }
     }
   }
 </script>
