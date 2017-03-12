@@ -17,7 +17,7 @@
       <div class="viewfinder" v-show="!img.preview"></div>
 
       <div class="preview" v-show="img.preview">
-        <img v-bind:src="img.data" alt="">
+        <img v-bind:src="img.data">
       </div>
 
     </div>
@@ -28,9 +28,7 @@
       </span>
 
       <span id="capture" class="control" v-on:click="initialiseCountdown()">
-        <span class="glyphicon glyphicon-camera">
-          <audio id="capture-audio" src="./assets/audio/click.mp3"></audio>
-        </span>
+        <span class="glyphicon glyphicon-camera"></span>
       </span>
 
       <span id="save" class="control" v-on:click="saveImg()">
