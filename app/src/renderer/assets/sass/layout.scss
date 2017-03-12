@@ -16,9 +16,17 @@ body {
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
+  position: absolute;
+}
+
+.countdown {
+  z-index: 999;
+  color: $white;
+  font-size: 200px;
 }
 
 .camera {
+  position: relative;
   text-align: center;
   box-shadow: 20px 20px 150px 0px $secondaryLight;
   padding: 15px;

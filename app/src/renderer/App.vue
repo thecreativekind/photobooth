@@ -7,6 +7,7 @@
       <div class="modals">
         <settings v-if="showSettingsModal" @close="showSettingsModal = false"></settings>
         <save v-if="showSaveModal" @close="showSaveModal = false"></save>
+        <countdown v-if="showCountdown" @close="showCountdown = false" :countdown="countdown"></countdown>
       </div>
     </div>
 
@@ -16,6 +17,7 @@
       <div class="preview" v-show="img.preview">
         <img v-bind:src="img.data" alt="">
       </div>
+
     </div>
 
     <div class="flex-controls">
@@ -47,13 +49,15 @@
 </template>
 
 <script>
-  import Settings from './components/Settings'
+  import Countdown from './components/Countdown'
   import Save from './components/Save'
+  import Settings from './components/Settings'
 
+  const axios = require('axios')
+  const electron = require('electron')
   const fs = require('fs')
   const WebCam = require('webcamjs')
-  const electron = require('electron')
-  const {dialog} = require('electron').remote
+  const {dialog} = electron.remote
 
   var screenElectron = electron.screen
   var store = localStorage
@@ -61,7 +65,7 @@
   export default {
 
     components: {
-      Save, Settings
+      Countdown, Save, Settings
     },
 
     data () {
@@ -69,6 +73,8 @@
         enabled: false,
         showSettingsModal: false,
         showSaveModal: false,
+        showCountdown: false,
+        countdown: '',
         filters: [
           { name: 'Images', extensions: ['jpeg'] }
         ],
@@ -83,12 +89,12 @@
           jpeg_quality: 90
         },
         audio: {
-          booted: 'power-up.mp3',
-          power: 'power-up.mp3',
-          snapped: 'click.mp3',
-          upoaded: 'complete.mp3',
-          saved: 'saved.mp3',
-          trashed: 'delete.mp3'
+          booted: './assets/audio/power-up.mp3',
+          power: './assets/audio/power-up.mp3',
+          snapped: './assets/audio/click.mp3',
+          upoaded: './assets/audio/complete.mp3',
+          saved: './assets/audio/saved.mp3',
+          trashed: './assets/audio/delete.mp3'
         }
       }
     },
@@ -133,20 +139,31 @@
       },
 
       takePhoto () {
-        var self = this
-
         if (!this.enabled) {
           return
         }
 
-        WebCam.snap(function (dataUri) {
-          self.img = {
-            data: dataUri,
-            preview: true
-          }
+        var self = this
+        var countdown = 3
+        self.showCountdown = true
 
-          self.play(self.audio.snapped)
-        })
+        var x = setInterval(function () {
+          self.countdown = countdown
+          countdown--
+          if (countdown < 0) {
+            self.showCountdown = false
+
+            WebCam.snap(function (dataUri) {
+              self.img = {
+                data: dataUri,
+                preview: true
+              }
+              self.play(self.audio.snapped)
+            })
+            clearInterval(x)
+            self.countdown = ''
+          }
+        }, 1000)
       },
 
       saveImg () {
@@ -189,24 +206,21 @@
       },
 
       upload () {
-        // var self = this
+        var self = this
         var url = store.getItem('endpoint')
 
         if (!url) {
           return
         }
 
-        WebCam.on('uploadProgress', function (progress) {
-          // Upload in progress (will be between 0.0 and 1.0)
+        axios.post(url, {img: self.img.data})
+        .then((response) => {
+          self.showSaveModal = true
+          console.log(response)
         })
-
-        WebCam.on('uploadComplete', function (code, text) {
-          // Upload complete!
+        .catch((error) => {
+          console.log(error)
         })
-
-        // WebCam.upload(self.img.data, url, function (code, text) {
-        //   self.showSaveModal = true
-        // })
 
         console.log('uploading')
       },
@@ -223,7 +237,7 @@
       },
 
       play (file) {
-        new Audio('./assets/audio/' + file).play()
+        new Audio(file).play()
       }
     }
   }
